@@ -1,3 +1,5 @@
+##谢谢大佬的配置https://github.com/Plutonium141/mosdns-config
+
 log:
   level: info  # 日志级别。可选 "debug" "info" "warn" "error"。默认 "info"。
   file: "/etc/mosdns/log.txt"
