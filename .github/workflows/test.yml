@@ -16,7 +16,9 @@ jobs:
     steps:
     - name: Set env
       run: |
-           rm -rf *
+           rm -rf dockerfile
+           rm -rf config.ymal
+           rm -rf entrypoint.sh
            git clone https://github.com/key-networks/ztncui-aio
            mv ztncui-aio/* .
            key-networks/ztncui
