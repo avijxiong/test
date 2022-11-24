@@ -21,7 +21,7 @@ jobs:
            rm -rf entrypoint.sh
            git clone https://github.com/key-networks/ztncui-aio
            mv ztncui-aio/* .
-           key-networks/ztncui
+         
            sed -i 's/github.com\/key-networks\/ztncui\/gitee.com\/opopop880\/ztncui/g' .Dockerfile
            echo "TAG=1.2.11" >> $GITHUB_ENV
            
