@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: zt
 
 on:
   repository_dispatch:
