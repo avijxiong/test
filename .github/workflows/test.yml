@@ -22,7 +22,7 @@ jobs:
            git clone https://github.com/key-networks/ztncui-aio
            mv ztncui-aio/* .
          
-           sed -i 's/github.com\/key-networks\/ztncui\/gitee.com\/opopop880\/ztncui/g' .Dockerfile
+           sed -i 's/github.com\/key-networks\/ztncui/gitee.com\/opopop880\/ztncui/g' .Dockerfile
            echo "TAG=1.2.11" >> $GITHUB_ENV
            
     - uses: actions/checkout@v3
