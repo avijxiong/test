@@ -12,11 +12,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-     rm -rf *
-     git clone https://github.com/key-networks/ztncui-aio
-     mv ztncui-aio/ /
-     key-networks/ztncui
-     sed -i 's/github.com\/key-networks\/ztncui\/gitee.com\/opopop880\/ztncui/g' .Dockerfile
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up QEMU
@@ -26,7 +22,12 @@ jobs:
       
     - name: Set env
       run: |
-          echo "TAG=1.2.11" >> $GITHUB_ENV
+           rm -rf *
+           git clone https://github.com/key-networks/ztncui-aio
+           mv ztncui-aio/ /
+           key-networks/ztncui
+           sed -i 's/github.com\/key-networks\/ztncui\/gitee.com\/opopop880\/ztncui/g' .Dockerfile
+           echo "TAG=1.2.11" >> $GITHUB_ENV
 
     - name: Login to DockerHub
       uses: docker/login-action@v1
