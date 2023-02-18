@@ -12,7 +12,7 @@ RUN apk add --no-cache ca-certificates \
 	&&  ln -sf /dev/stdout /etc/mosdns/log.txt \
 	&&  wget https://mirror.apad.pro/dns/easymosdns.tar.gz \
 	&&  tar xzf easymosdns.tar.gz \
-	&&  mv easymosdns /etc/mosdns
+	&&  mv easymosdns /etc/mosdns \
 	&& chmod +x /etc/mosdns/cache -R \
 	&& chmod +x /etc/mosdns/local -R \
 	&& chmod +x /etc/mosdns/remote -R \
