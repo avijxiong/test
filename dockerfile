@@ -1,20 +1,7 @@
-FROM --platform=${TARGETPLATFORM} golang:alpine as builder
-ARG CGO_ENABLED=0
+FROM irinesistiana/mosdns:v4.5.3
+LABEL maintainer="None"
 ARG TAG
 ARG REPOSITORY
-
-WORKDIR /root
-RUN apk add --update git \
-	&& git clone https://github.com/${REPOSITORY} mosdns \
-	&& cd ./mosdns \
-	&& git fetch --all --tags \
-	&& git checkout tags/${TAG} \
-	&& go build -ldflags "-s -w -X main.version=${TAG}" -trimpath -o mosdns
-
-
-FROM --platform=${TARGETPLATFORM} alpine:latest
-LABEL maintainer="none"
-
 COPY --from=builder /root/mosdns/mosdns /usr/bin/
 COPY entrypoint.sh /
 RUN chmod +x entrypoint.sh
