@@ -3,10 +3,9 @@ LABEL maintainer="None"
 ARG TAG
 ARG REPOSITORY
 COPY entrypoint.sh /
-RUN wget https://mirror.apad.pro/dns/easymosdns.tar.gz \
-	&&  tar xzf easymosdns.tar.gz \
-	&&  mv easymosdns /etc/mosdns \
-	&&  chmod +x entrypoint.sh \
+RUN wget https://mirror.apad.pro/dns/easymosdns.tar.gz
+RUN tar xvzf easymosdns.tar.gz && mv easymosdns /etc/mosdns
+RUN chmod +x entrypoint.sh
 	&&  apk add --no-cache ca-certificates \
 	&&  apk add --no-cache curl \
 	&&  echo '15 7 * * *  0 5 * * * /etc/mosdns/rules/update-cdn'>/var/spool/cron/crontabs/root \
