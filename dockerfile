@@ -2,7 +2,7 @@ FROM irinesistiana/mosdns:v4.5.3
 LABEL maintainer="None"
 COPY entrypoint.sh /
 RUN wget https://mirror.apad.pro/dns/easymosdns.tar.gz 
-RUN tar tar -xzf easymosdns.tar.gz  -C /etc/mosdns --strip-components=1 \
+RUN tar xvzf  easymosdns.tar.gz  -C /etc/mosdns --strip-components=1 \
 	&&  chmod +x entrypoint.sh \
 	&&  apk add --no-cache ca-certificates \
 	&&  apk add --no-cache curl \
