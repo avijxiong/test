@@ -3,7 +3,7 @@ LABEL maintainer="None"
 ARG TAG
 ARG REPOSITORY
 COPY entrypoint.sh /
-ADD https://mirror.apad.pro/dns/easymosdns.tar.gz
+ADD https://mirror.apad.pro/dns/easymosdns.tar.gz /
 RUN chmod +x entrypoint.sh \
 RUN apk add --no-cache ca-certificates \
 	&& apk add --no-cache curl \
