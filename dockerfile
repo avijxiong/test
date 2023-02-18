@@ -12,14 +12,7 @@ RUN apk add --no-cache ca-certificates \
 	&&  chmod +x /usr/bin/mosdns \
 	&&  ln -sf /dev/stdout /etc/mosdns/log.txt \
 	&&  mv easymosdns /etc/mosdns \
-	&&  chmod +x /etc/mosdns/cache -R \
-	&&  chmod +x /etc/mosdns/local -R \
-	&&  chmod +x /etc/mosdns/remote -R \
-	&&  chmod +x /etc/mosdns/rules/update* \
-	&&  chmod +x /etc/mosdns/tools/adblock* \
-	&&  chmod +x /etc/mosdns/tools/ecs* \
-	&&  chmod +x /etc/mosdns/tools/ipv4* \
-	&&  chmod +x /etc/mosdns/tools/socks5-reload
+
   	
 # 设置时区为上海
 RUN apk -U add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
