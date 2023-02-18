@@ -11,7 +11,7 @@ RUN apk add --no-cache ca-certificates \
 	&&  chmod 600 /var/spool/cron/crontabs/root \
 	&&  chmod +x /usr/bin/mosdns \
 	&&  ln -sf /dev/stdout /etc/mosdns/log.txt \
-	&&  mv easymosdns /etc/mosdns \
+	&&  mv easymosdns /etc/mosdns
 
   	
 # 设置时区为上海
