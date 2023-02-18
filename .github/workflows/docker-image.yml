@@ -22,7 +22,7 @@ jobs:
       
     - name: Set env
       run: |
-          echo "TAG=v4.5.3" >> $GITHUB_ENV
+          echo "TAG=$(cat tag)" >> $GITHUB_ENV
 
     - name: Login to DockerHub
       uses: docker/login-action@v1
