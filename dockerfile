@@ -3,7 +3,7 @@ LABEL maintainer="None"
 COPY entrypoint.sh /
 RUN wget https://mirror.apad.pro/dns/easymosdns.tar.gz 
 RUN tar xvzf  easymosdns.tar.gz  -C /etc/mosdns --strip-components=1
-RUN sed -i "s/\/bin\/bash\/bin\/sh/g" `grep bin/bash -rl /etc/mosdns` \
+RUN sed -i "s/bin\/bash/bin\/sh/g" `grep bin/bash -rl /etc/mosdns` \
 	&&  chmod +x entrypoint.sh \
 	&&  apk add --no-cache ca-certificates \
 	&&  apk add --no-cache curl \
