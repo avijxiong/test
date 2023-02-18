@@ -9,14 +9,9 @@ RUN chmod +x entrypoint.sh \
 	&&  apk add --no-cache ca-certificates \
 	&&  apk add --no-cache curl \
 	&&  echo '15 7 * * *  0 5 * * * /etc/mosdns/rules/update-cdn'>/var/spool/cron/crontabs/root \
-	&&  ln -sf /dev/stdout /etc/mosdns/log.txt \
-	&&  chmod +x /etc/mosdns/local -R \
-	&&  chmod +x /etc/mosdns/remote -R \
-	&&  chmod +x /etc/mosdns/rules/update* \
-	&&  chmod +x /etc/mosdns/tools/adblock* \
-	&&  chmod +x /etc/mosdns/tools/ecs* \
-	&&  chmod +x /etc/mosdns/tools/ipv4* \
-	&&  chmod +x /etc/mosdns/tools/socks5-reload
+	&&  chmod 600 /var/spool/cron/crontabs/root \
+	&&  chmod +x /usr/bin/mosdns \
+	&&  ln -sf /dev/stdout /etc/mosdns/log.txt 
 
   	
 # 设置时区为上海
