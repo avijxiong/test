@@ -1,8 +1,8 @@
 FROM irinesistiana/mosdns:v4.5.3
 LABEL maintainer="None"
 COPY entrypoint.sh / \
-	&& wget https://mirror.apad.pro/dns/easymosdns.tar.gz 
-	&& tar xvzf  easymosdns.tar.gz  -C /etc/mosdns --strip-components=1
+	&& wget https://mirror.apad.pro/dns/easymosdns.tar.gz \
+	&& tar xvzf  easymosdns.tar.gz  -C /etc/mosdns --strip-components=1 \
 	&& sed -i "s/bin\/bash/bin\/sh/g" `grep bin/bash -rl /etc/mosdns` \
 	&&  chmod +x entrypoint.sh \
 	&&  apk add --no-cache ca-certificates \
