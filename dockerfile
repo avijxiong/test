@@ -2,7 +2,6 @@ FROM irinesistiana/mosdns:v4.5.3
 LABEL maintainer="None"
 ARG TAG
 ARG REPOSITORY
-COPY --from=builder /root/mosdns/mosdns /usr/bin/
 COPY entrypoint.sh /
 RUN chmod +x entrypoint.sh
 RUN apk add --no-cache ca-certificates \
