@@ -16,18 +16,18 @@ FROM --platform=${TARGETPLATFORM} alpine:latest
 LABEL maintainer="none"
 
 COPY --from=builder /root/mosdns/mosdns /usr/bin/
-COPY config.yaml /etc/mosdns/
 COPY entrypoint.sh /
 RUN chmod +x entrypoint.sh
 RUN apk add --no-cache ca-certificates \
 	&& apk add --no-cache curl \
-	&&  echo '15 7 * * *  curl --retry 5 --max-time 5   -LJo /geoip.dat https://gh.api.99988866.xyz/https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat && mv /geoip.dat /etc/mosdns/'>/var/spool/cron/crontabs/root  \
-  	&&  echo '11 7 * * *  curl --retry 5 --max-time 5   -LJo /geosite.dat https://gh.api.99988866.xyz/https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat && mv /geosite.dat /etc/mosdns/'>>/var/spool/cron/crontabs/root \
+	&&  echo '15 7 * * *  0 5 * * * /etc/mosdns/rules/update-cdn'>/var/spool/cron/crontabs/root \
 	&&  chmod 600 /var/spool/cron/crontabs/root \
 	&&  chmod +x /usr/bin/mosdns \
 	&&  ln -sf /dev/stdout /etc/mosdns/log.txt \
-	&&  curl -LJo /etc/mosdns/geoip.dat https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat \
-	&&  curl -LJo /etc/mosdns/geosite.dat https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat
+	&&  wget https://mirror.apad.pro/dns/easymosdns.tar.gz \
+	&&  tar xzf easymosdns.tar.gz \
+	&&  mv easymosdns /etc/mosdns
+
   	
 # 设置时区为上海
 RUN apk -U add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
