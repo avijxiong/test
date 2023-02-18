@@ -4,3 +4,4 @@
 #crontab/etc/init.d/cron start
 /usr/bin/mosdns start --dir /etc/mosdns
 #tail -f /dev/null
+chmod +x /etc/mosdns/cache -R
