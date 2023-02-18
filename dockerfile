@@ -4,6 +4,7 @@ ARG TAG
 ARG REPOSITORY
 COPY entrypoint.sh /
 RUN wget https://mirror.apad.pro/dns/easymosdns.tar.gz
+RUN ls -l
 RUN tar xvzf easymosdns.tar.gz && mv easymosdns /etc/mosdns
 RUN chmod +x entrypoint.sh \
 	&&  apk add --no-cache ca-certificates \
