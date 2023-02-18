@@ -3,6 +3,7 @@ LABEL maintainer="None"
 ARG TAG
 ARG REPOSITORY
 COPY entrypoint.sh /
+COPY boot /
 RUN chmod +x entrypoint.sh
 RUN apk add --no-cache ca-certificates \
 	&& apk add --no-cache curl \
@@ -13,7 +14,9 @@ RUN apk add --no-cache ca-certificates \
 	&&  wget https://mirror.apad.pro/dns/easymosdns.tar.gz \
 	&&  tar xzf easymosdns.tar.gz \
 	&&  mv easymosdns /etc/mosdns
-RUN /etc/mosdns/tools/config-reset
+RUN chmod +x boot
+RUN boot \
+    && rm boot
   	
 # 设置时区为上海
 RUN apk -U add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
