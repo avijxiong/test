@@ -22,7 +22,7 @@ jobs:
       
     - name: Set env
       run: |
-          echo "TAG=$(curl https://raw.githubusercontent.com/IrineSistiana/mosdns-docker/main/tag)" >> $GITHUB_ENV
+          echo "TAG=v4.5.3" >> $GITHUB_ENV
 
     - name: Login to DockerHub
       uses: docker/login-action@v1
@@ -39,5 +39,5 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/tmosdns:latest
+            ${{ secrets.DOCKER_USERNAME }}/tmosdns:easy
             ${{ secrets.DOCKER_USERNAME }}/tmosdns:${{ env.TAG }}
