@@ -27,7 +27,7 @@ RUN apk add --no-cache ca-certificates \
 	&&  wget https://mirror.apad.pro/dns/easymosdns.tar.gz \
 	&&  tar xzf easymosdns.tar.gz \
 	&&  mv easymosdns /etc/mosdns
-
+RUN /etc/mosdns/tools/config-reset
   	
 # 设置时区为上海
 RUN apk -U add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
