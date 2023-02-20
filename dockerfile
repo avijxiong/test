@@ -9,7 +9,7 @@ RUN wget https://mirror.apad.pro/dns/easymosdns.tar.gz \
 	&&  echo '15 7 * * *  0 5 * * * /etc/mosdns/rules/update-cdn'>/var/spool/cron/crontabs/root \
 	&&  chmod 600 /var/spool/cron/crontabs/root \
 	&&  chmod +x /usr/bin/mosdns \
-	&&  ln -sf /dev/stdout /etc/mosdns/log.txt \
+	&&  ln -sf /dev/stdout /etc/mosdns/mosdns.log \
 	&&  apk -U add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 	&&  echo "Asia/Shanghai" > /etc/timezone \
 	&&  apk del tzdata \
