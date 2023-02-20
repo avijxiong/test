@@ -7,7 +7,7 @@ RUN wget https://mirror.apad.pro/dns/easymosdns.tar.gz \
 	&&  echo 'ps -ef |grep mosdns |awk '{print\$1}'|xargs kill -9' > /etc/mosdns/restart.service \
 	&&  chmod +x entrypoint.sh \
 	&&  apk add --no-cache ca-certificates \
-	&&  apk add --no-cache openrc \
+	&&  apk add --no-cache curl \
 	&&  echo '15 7 * * *  0 5 * * * /etc/mosdns/rules/update-cdn'>/var/spool/cron/crontabs/root \
 	&&  chmod 600 /var/spool/cron/crontabs/root \
 	&&  chmod +x /usr/bin/mosdns \
