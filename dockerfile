@@ -14,7 +14,9 @@ RUN wget https://mirror.apad.pro/dns/easymosdns.tar.gz \
 	&&  ln -sf /dev/stdout /etc/mosdns/mosdns.log \
 	&&  apk -U add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
 	&&  echo "Asia/Shanghai" > /etc/timezone \
-	&&  apk del tzdata
+	&&  apk del tzdata \
+	&& mosdns service install -d /etc/mosdns -c config.yaml
+
 	
 
 
