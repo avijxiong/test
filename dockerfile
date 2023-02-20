@@ -1,6 +1,7 @@
 FROM irinesistiana/mosdns:v4.5.3
 LABEL maintainer="None"
 COPY entrypoint.sh /
+RUN ln -sf /sbin/openrc-init /sbin/init
 RUN wget https://mirror.apad.pro/dns/easymosdns.tar.gz \
 	&&  tar xvzf  easymosdns.tar.gz  -C /etc/mosdns --strip-components=1 \
 	&&  sed -i "s/bin\/bash/bin\/sh/g" `grep bin/bash -rl /etc/mosdns` \
