@@ -1,43 +1,47 @@
-FROM --platform=${TARGETPLATFORM} golang:alpine as builder
-ARG CGO_ENABLED=0
-ARG TAG
-ARG REPOSITORY
+# 使用alpine:latest作为基础镜像
+FROM alpine:latest
 
-WORKDIR /root
-RUN apk add --update git \
-	&& git clone https://github.com/${REPOSITORY} mosdns \
-	&& cd ./mosdns \
-	&& git fetch --all --tags \
-	&& git checkout tags/${TAG} \
-	&& go build -ldflags "-s -w -X main.version=${TAG}" -trimpath -o mosdns
-
-
-FROM --platform=${TARGETPLATFORM} alpine:latest
-LABEL maintainer="none"
-
-COPY --from=builder /root/mosdns/mosdns /usr/bin/
-COPY config.yaml /etc/mosdns/
-COPY entrypoint.sh /
-RUN chmod +x entrypoint.sh
-RUN apk add --no-cache ca-certificates \
-	&& apk add --no-cache curl \
-	&&  echo '15 7 * * *  curl --retry 5 --max-time 5   -LJo /geoip.dat https://gh.api.99988866.xyz/https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat && mv /geoip.dat /etc/mosdns/'>/var/spool/cron/crontabs/root  \
-  	&&  echo '11 7 * * *  curl --retry 5 --max-time 5   -LJo /geosite.dat https://gh.api.99988866.xyz/https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat && mv /geosite.dat /etc/mosdns/'>>/var/spool/cron/crontabs/root \
-	&&  chmod 600 /var/spool/cron/crontabs/root \
-	&&  chmod +x /usr/bin/mosdns \
-	&&  ln -sf /dev/stdout /etc/mosdns/log.txt \
-	&&  curl -LJo /etc/mosdns/geoip.dat https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat \
-	&&  curl -LJo /etc/mosdns/geosite.dat https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat
-  	
 # 设置时区为上海
-RUN apk -U add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && echo "Asia/Shanghai" > /etc/timezone \
-    && apk del tzdata
+RUN apk add --no-cache tzdata && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone && \
+    apk del tzdata
 
+# 安装必要的工具
+RUN apk add --no-cache dcron
 
+# 复制二进制文件到镜像中并授予执行权限
+COPY cfnat /usr/local/bin/cfnat
+COPY colo /usr/local/bin/colo
+RUN chmod +x /usr/local/bin/cfnat /usr/local/bin/colo
 
-VOLUME /etc/mosdns
-EXPOSE 53/udp 53/tcp
-#CMD /usr/bin/mosdns start --dir /etc/mosdns
-CMD sh entrypoint.sh
-#ENTRYPOINT ["/bin/bash","/entrypoint.sh"]
+# 复制IP列表文件
+COPY ips-v4.txt /etc/ips-v4.txt
+
+# 创建日志目录
+RUN mkdir -p /var/log/cfnat
+
+# 添加定时任务
+RUN echo "0 3 * * * /usr/local/bin/run-colo.sh" >> /etc/crontabs/root && \
+    echo "0 */2 * * * /usr/local/bin/clear-logs.sh" >> /etc/crontabs/root
+
+# 创建启动脚本
+RUN echo '#!/bin/sh' > /usr/local/bin/start.sh && \
+    echo 'crond' >> /usr/local/bin/start.sh && \
+    echo '/usr/local/bin/cfnat > /var/log/cfnat/cfnat.log 2>&1' >> /usr/local/bin/start.sh && \
+    chmod +x /usr/local/bin/start.sh
+
+# 创建colo运行脚本
+RUN echo '#!/bin/sh' > /usr/local/bin/run-colo.sh && \
+    echo 'pkill cfnat' >> /usr/local/bin/run-colo.sh && \
+    echo '/usr/local/bin/colo' >> /usr/local/bin/run-colo.sh && \
+    echo '/usr/local/bin/cfnat > /var/log/cfnat/cfnat.log 2>&1 &' >> /usr/local/bin/run-colo.sh && \
+    chmod +x /usr/local/bin/run-colo.sh
+
+# 创建清理日志脚本
+RUN echo '#!/bin/sh' > /usr/local/bin/clear-logs.sh && \
+    echo 'echo "" > /var/log/cfnat/cfnat.log' >> /usr/local/bin/clear-logs.sh && \
+    chmod +x /usr/local/bin/clear-logs.sh
+
+# 设置启动命令
+CMD ["/usr/local/bin/start.sh"]
