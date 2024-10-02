@@ -45,20 +45,23 @@ RUN echo '#!/bin/sh' > /usr/local/bin/start.sh && \
 # 创建colo运行脚本
 RUN echo '#!/bin/sh' > /usr/local/bin/run-colo.sh && \
     echo 'cd /usr/local/bin' >> /usr/local/bin/run-colo.sh && \
+    echo 'echo "$(date): Starting run-colo.sh script"' >> /usr/local/bin/run-colo.sh && \
+    echo 'echo "$(date): Stopping cfnat"' >> /usr/local/bin/run-colo.sh && \
     echo 'pkill cfnat' >> /usr/local/bin/run-colo.sh && \
+    echo 'echo "$(date): Running colo"' >> /usr/local/bin/run-colo.sh && \
     echo './colo' >> /usr/local/bin/run-colo.sh && \
     echo 'colo_exit_code=$?' >> /usr/local/bin/run-colo.sh && \
+    echo 'echo "$(date): colo finished with exit code $colo_exit_code"' >> /usr/local/bin/run-colo.sh && \
     echo 'if [ $colo_exit_code -eq 0 ]; then' >> /usr/local/bin/run-colo.sh && \
+    echo '    echo "$(date): colo succeeded, restarting cfnat"' >> /usr/local/bin/run-colo.sh && \
     echo '    exec ./cfnat' >> /usr/local/bin/run-colo.sh && \
     echo 'else' >> /usr/local/bin/run-colo.sh && \
-    echo '    echo "colo failed with exit code $colo_exit_code. Not restarting cfnat."' >> /usr/local/bin/run-colo.sh && \
+    echo '    echo "$(date): colo failed with exit code $colo_exit_code. Not restarting cfnat."' >> /usr/local/bin/run-colo.sh && \
     echo '    exit $colo_exit_code' >> /usr/local/bin/run-colo.sh && \
     echo 'fi' >> /usr/local/bin/run-colo.sh && \
     chmod +x /usr/local/bin/run-colo.sh
 
 
-# 删除之前添加的清理日志的cron任务
-RUN sed -i '/clear-logs.sh/d' /etc/crontabs/root
 
 # 设置工作目录
 WORKDIR /usr/local/bin
