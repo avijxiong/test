@@ -33,11 +33,11 @@ jobs:
     - name: Prepare binary files
       run: |
         if [ "${{ matrix.platform }}" = "linux/amd64" ]; then
-          cp cfnat-amd64 cfnat
-          cp colo-amd64 colo
+          cp cfnat-linux-amd64 cfnat
+          cp colo-linux-amd64 colo
         else
-          cp cfnat-arm cfnat
-          cp colo-arm colo
+          cp cfnat-linux-arm64 cfnat
+          cp colo-linux-arm64 colo
         fi
         chmod +x cfnat colo
 
