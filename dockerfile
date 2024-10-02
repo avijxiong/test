@@ -15,8 +15,6 @@ COPY cfnat /usr/local/bin/cfnat
 COPY colo /usr/local/bin/colo
 RUN chmod +x /usr/local/bin/cfnat /usr/local/bin/colo
 
-# 复制IP列表文件
-COPY ips-v4.txt /etc/ips-v4.txt
 
 # 创建日志目录
 RUN mkdir -p /var/log/cfnat
