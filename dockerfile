@@ -33,22 +33,26 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
 RUN mkdir -p /var/log/cfnat
 
 # 添加定时任务
-RUN echo "0 3 * * * /usr/local/bin/run-colo.sh" >> /etc/crontabs/root 
+RUN echo "0 3 * * * /usr/local/bin/run-colo.sh" >> /etc/crontabs/root
 
 # 创建启动脚本
 RUN echo '#!/bin/sh' > /usr/local/bin/start.sh && \
+    echo 'cd /usr/local/bin' >> /usr/local/bin/start.sh && \
     echo 'crond' >> /usr/local/bin/start.sh && \
-    echo 'exec /usr/local/bin/cfnat' >> /usr/local/bin/start.sh && \
+    echo 'exec ./cfnat' >> /usr/local/bin/start.sh && \
     chmod +x /usr/local/bin/start.sh
 
 # 创建colo运行脚本
 RUN echo '#!/bin/sh' > /usr/local/bin/run-colo.sh && \
+    echo 'cd /usr/local/bin' >> /usr/local/bin/run-colo.sh && \
     echo 'pkill cfnat' >> /usr/local/bin/run-colo.sh && \
-    echo '/usr/local/bin/colo' >> /usr/local/bin/run-colo.sh && \
-    echo 'exec /usr/local/bin/cfnat' >> /usr/local/bin/run-colo.sh && \
+    echo './colo' >> /usr/local/bin/run-colo.sh && \
+    echo 'exec ./cfnat' >> /usr/local/bin/run-colo.sh && \
     chmod +x /usr/local/bin/run-colo.sh
 
 
+# 设置工作目录
+WORKDIR /usr/local/bin
 
 # 设置启动命令
-CMD ["/usr/local/bin/start.sh"]
+CMD ["./start.sh"]
