@@ -39,20 +39,21 @@ RUN echo "0 3 * * * /usr/local/bin/run-colo.sh" >> /etc/crontabs/root && \
 # 创建启动脚本
 RUN echo '#!/bin/sh' > /usr/local/bin/start.sh && \
     echo 'crond' >> /usr/local/bin/start.sh && \
-    echo '/usr/local/bin/cfnat > /var/log/cfnat/cfnat.log 2>&1' >> /usr/local/bin/start.sh && \
+    echo 'exec /usr/local/bin/cfnat' >> /usr/local/bin/start.sh && \
     chmod +x /usr/local/bin/start.sh
 
 # 创建colo运行脚本
 RUN echo '#!/bin/sh' > /usr/local/bin/run-colo.sh && \
     echo 'pkill cfnat' >> /usr/local/bin/run-colo.sh && \
     echo '/usr/local/bin/colo' >> /usr/local/bin/run-colo.sh && \
-    echo '/usr/local/bin/cfnat > /var/log/cfnat/cfnat.log 2>&1 &' >> /usr/local/bin/run-colo.sh && \
+    echo 'exec /usr/local/bin/cfnat' >> /usr/local/bin/run-colo.sh && \
     chmod +x /usr/local/bin/run-colo.sh
 
-# 创建清理日志脚本
-RUN echo '#!/bin/sh' > /usr/local/bin/clear-logs.sh && \
-    echo 'echo "" > /var/log/cfnat/cfnat.log' >> /usr/local/bin/clear-logs.sh && \
-    chmod +x /usr/local/bin/clear-logs.sh
+# 删除清理日志脚本，因为我们不再需要它
+RUN rm /usr/local/bin/clear-logs.sh
+
+# 删除之前添加的清理日志的cron任务
+RUN sed -i '/clear-logs.sh/d' /etc/crontabs/root
 
 # 设置启动命令
 CMD ["/usr/local/bin/start.sh"]
