@@ -33,7 +33,8 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
 RUN mkdir -p /var/log/cfnat
 
 # 添加定时任务
-RUN echo "0 3 * * * /usr/local/bin/run-colo.sh" >> /etc/crontabs/root 
+RUN echo "0 3 * * * /usr/local/bin/run-colo.sh >> /var/log/cfnat/colo.log 2>&1" >> /etc/crontabs/root && \
+    echo "10 3 * * * /usr/local/bin/restart-cfnat.sh >> /proc/1/fd/1 2>&1" >> /etc/crontabs/root
 
 # 创建启动脚本
 RUN echo '#!/bin/sh' > /usr/local/bin/start.sh && \
@@ -45,23 +46,19 @@ RUN echo '#!/bin/sh' > /usr/local/bin/start.sh && \
 # 创建colo运行脚本
 RUN echo '#!/bin/sh' > /usr/local/bin/run-colo.sh && \
     echo 'cd /usr/local/bin' >> /usr/local/bin/run-colo.sh && \
-    echo 'echo "$(date): Starting run-colo.sh script"' >> /usr/local/bin/run-colo.sh && \
-    echo 'echo "$(date): Stopping cfnat"' >> /usr/local/bin/run-colo.sh && \
-    echo 'pkill cfnat' >> /usr/local/bin/run-colo.sh && \
-    echo 'echo "$(date): Running colo"' >> /usr/local/bin/run-colo.sh && \
+    echo 'echo "$(date): Starting colo"' >> /usr/local/bin/run-colo.sh && \
     echo './colo' >> /usr/local/bin/run-colo.sh && \
-    echo 'colo_exit_code=$?' >> /usr/local/bin/run-colo.sh && \
-    echo 'echo "$(date): colo finished with exit code $colo_exit_code"' >> /usr/local/bin/run-colo.sh && \
-    echo 'if [ $colo_exit_code -eq 0 ]; then' >> /usr/local/bin/run-colo.sh && \
-    echo '    echo "$(date): colo succeeded, restarting cfnat"' >> /usr/local/bin/run-colo.sh && \
-    echo '    exec ./cfnat' >> /usr/local/bin/run-colo.sh && \
-    echo 'else' >> /usr/local/bin/run-colo.sh && \
-    echo '    echo "$(date): colo failed with exit code $colo_exit_code. Not restarting cfnat."' >> /usr/local/bin/run-colo.sh && \
-    echo '    exit $colo_exit_code' >> /usr/local/bin/run-colo.sh && \
-    echo 'fi' >> /usr/local/bin/run-colo.sh && \
+    echo 'echo "$(date): colo finished with exit code $?"' >> /usr/local/bin/run-colo.sh && \
     chmod +x /usr/local/bin/run-colo.sh
 
-
+# 创建cfnat重启脚本
+RUN echo '#!/bin/sh' > /usr/local/bin/restart-cfnat.sh && \
+    echo 'cd /usr/local/bin' >> /usr/local/bin/restart-cfnat.sh && \
+    echo 'echo "$(date): Restarting cfnat"' >> /usr/local/bin/restart-cfnat.sh && \
+    echo 'pkill cfnat' >> /usr/local/bin/restart-cfnat.sh && \
+    echo 'sleep 5' >> /usr/local/bin/restart-cfnat.sh && \
+    echo 'exec ./cfnat' >> /usr/local/bin/restart-cfnat.sh && \
+    chmod +x /usr/local/bin/restart-cfnat.sh
 
 # 设置工作目录
 WORKDIR /usr/local/bin
