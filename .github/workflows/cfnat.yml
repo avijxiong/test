@@ -11,9 +11,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        platform: [linux/amd64, linux/arm64]
 
     steps:
     - uses: actions/checkout@v3
@@ -32,34 +29,19 @@ jobs:
 
     - name: Prepare binary files
       run: |
-        if [ "${{ matrix.platform }}" = "linux/amd64" ]; then
-          cp cfnat-linux-amd64 cfnat
-          cp colo-linux-amd64 colo
-        else
-          cp cfnat-linux-arm64 cfnat
-          cp colo-linux-arm64 colo
-        fi
-        chmod +x cfnat colo
+        chmod +x cfnat-linux-amd64 cfnat-linux-arm64 colo-linux-amd64 colo-linux-arm64
 
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
         context: .
-        platforms: ${{ matrix.platform }}
+        platforms: linux/amd64,linux/arm64
         push: true
         tags: |
-          ${{ secrets.DOCKER_USERNAME }}/cffffff:latest-${{ matrix.platform == 'linux/amd64' && 'amd64' || 'arm64' }}
-          ${{ secrets.DOCKER_USERNAME }}/cffffff:${{ github.sha }}-${{ matrix.platform == 'linux/amd64' && 'amd64' || 'arm64' }}
-
-    - name: Create and push manifest
-      if: ${{ matrix.platform == 'linux/amd64' }}
-      run: |
-        docker manifest create ${{ secrets.DOCKER_USERNAME }}/cffffff:latest \
-          ${{ secrets.DOCKER_USERNAME }}/cffffff:latest-amd64 \
-          ${{ secrets.DOCKER_USERNAME }}/cffffff:latest-arm64
-        docker manifest push ${{ secrets.DOCKER_USERNAME }}/cffffff:latest
-        
-        docker manifest create ${{ secrets.DOCKER_USERNAME }}/cffffff:${{ github.sha }} \
-          ${{ secrets.DOCKER_USERNAME }}/cffffff:${{ github.sha }}-amd64 \
-          ${{ secrets.DOCKER_USERNAME }}/cffffff:${{ github.sha }}-arm64
-        docker manifest push ${{ secrets.DOCKER_USERNAME }}/cffffff:${{ github.sha }}
+          ${{ secrets.DOCKER_USERNAME }}/cffffff:latest
+          ${{ secrets.DOCKER_USERNAME }}/cffffff:${{ github.sha }}
+        build-args: |
+          CFNAT_AMD64=cfnat-linux-amd64
+          CFNAT_ARM64=cfnat-linux-arm64
+          COLO_AMD64=colo-linux-amd64
+          COLO_ARM64=colo-linux-arm64
