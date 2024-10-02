@@ -39,7 +39,7 @@ jobs:
         push: true
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/cffffff:latest
-          ${{ secrets.DOCKER_USERNAME }}/cffffff:${{ github.sha }}
+          
         build-args: |
           CFNAT_AMD64=cfnat-linux-amd64
           CFNAT_ARM64=cfnat-linux-arm64
