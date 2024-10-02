@@ -33,8 +33,7 @@ RUN if [ "$(uname -m)" = "x86_64" ]; then \
 RUN mkdir -p /var/log/cfnat
 
 # 添加定时任务
-RUN echo "0 3 * * * /usr/local/bin/run-colo.sh" >> /etc/crontabs/root && \
-    echo "0 */2 * * * /usr/local/bin/clear-logs.sh" >> /etc/crontabs/root
+RUN echo "0 3 * * * /usr/local/bin/run-colo.sh" >> /etc/crontabs/root 
 
 # 创建启动脚本
 RUN echo '#!/bin/sh' > /usr/local/bin/start.sh && \
@@ -49,11 +48,7 @@ RUN echo '#!/bin/sh' > /usr/local/bin/run-colo.sh && \
     echo 'exec /usr/local/bin/cfnat' >> /usr/local/bin/run-colo.sh && \
     chmod +x /usr/local/bin/run-colo.sh
 
-# 删除清理日志脚本，因为我们不再需要它
-RUN rm /usr/local/bin/clear-logs.sh
 
-# 删除之前添加的清理日志的cron任务
-RUN sed -i '/clear-logs.sh/d' /etc/crontabs/root
 
 # 设置启动命令
 CMD ["/usr/local/bin/start.sh"]
