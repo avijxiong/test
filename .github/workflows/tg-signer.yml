@@ -2,7 +2,7 @@ name: Build tg-signer
 
 on:
   push:
-    branches: [ tg-signer ]
+    branches: [ tg-signer ]  # 只监听tg-signer分支
   pull_request:
     branches: [ tg-signer ]
   repository_dispatch:
@@ -14,6 +14,8 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
+      with:
+        ref: tg-signer  # 明确指定检出tg-signer分支的代码
     
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
@@ -36,4 +38,4 @@ jobs:
         push: true
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/tg-signer:latest
-          ${{ secrets.DOCKER_USERNAME }}/tg-signer:${{ github.sha }}
+          ${{ secrets.DOCKER_USERNAME }}/tg-signer:${{ github.sha }} 
